@@ -138,7 +138,9 @@ plot(df$log ~ df2$log)
 
 #
 #
-predict_length <- 252
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+df <- read.delim("GBR_Dairy.tsv")
+predict_length <- 240 - 24
 dairy <- df$dairy
 month <- rep(1:12, length(dairy) / 12)
 times <- c(1:length(dairy))
@@ -149,4 +151,4 @@ newdata = data.frame("times" = c(1:(predict_length + 24)), "month" = month))
 
 plot(dairy, type = "l", lwd = 2, col = "#2b00ff")
 lines(predicted_data, col = "#04ff00")
-abline(v = predict_length, lty = 4, col = "#ff0000")
+abline(v = predict_length, col = "#ff0000")
