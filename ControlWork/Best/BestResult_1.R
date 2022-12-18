@@ -9,8 +9,8 @@ x = 10+(11*e1)-(12*e2)
 y = -3+(4*e1)+(5*e2) 
 
 table1 = matrix(nrow = 2, ncol = 3)
-rownames(table1) = c("x","y")
-colnames(table1) = c("mean","var", 'sd')
+rownames(table1) = c("x", "y")
+colnames(table1) = c("mean", "var", 'sd')
 table1[1,1] = mean(x)
 table1[1,2] = var(x)
 table1[1,3] = sd(x)
@@ -18,7 +18,6 @@ table1[2,1] = mean(y)
 table1[2,2] = var(y)
 table1[2,3] = sd(y)
 table1
-
 cor(x,y)
 
 cor.test(x,y)
