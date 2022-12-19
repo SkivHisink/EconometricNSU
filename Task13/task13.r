@@ -1,25 +1,21 @@
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 df <- read.delim("GBR_Dairy.tsv")
 View(df)
-y <- c(df$dairy[1:24])
-
-plot.ts(y, type = "o", pch = 18, cex = 0.5)
+h <- 24
+train_len <- length(df$dairy) - h
+data <- c(df$dairy[1:train_len])
+test <- c(df$dairy[(train_len + 1): length(df$dairy)])
+plot.ts(data, type = "o", pch = 18, cex = 0.5)
 grid()
 
-mod1 <- arima(y, c(1, 1, 1), list(order = c(1, 1, 1), period = 12))
+library(forecast)
+train_ts <- ts(data = data, start = c(1990, 1), frequency = 12)
 
-print(mod1)
+mod1 <- auto.arima(train$Sales, seasonal = TRUE)
+summary(m1)
+print(m1)
 
-lmtest::coeftest(mod1)
-
-acf(resid(mod1))
-
-h <- 24
-TT <- length(y) - h
-mod1 <- arima(y[1:TT], c(2, 1, 1), list(order = c(2, 1, 1), period = 12))
-
-print(mod1)
-acf(resid(mod1))
+acf(resid(m1))
 
 pr <- predict(mod1, n.ahead = h)
 yp <- pr$pred
