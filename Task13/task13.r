@@ -4,52 +4,56 @@ View(df)
 h <- 24
 train_len <- length(df$dairy) - h
 data <- c(df$dairy[1:train_len])
-test <- c(df$dairy[(train_len + 1): length(df$dairy)])
-plot.ts(data, type = "o", pch = 18, cex = 0.5)
+test <- c(df$dairy[(train_len): length(df$dairy)])
+plot.ts(data, type = "o", pch = 18, col = "#0000ff")
 grid()
 
 library(forecast)
 train_ts <- ts(data = data, start = c(1990, 1), frequency = 12)
+test_ts <- ts(data = test, start = c(2008, 1), frequency = 12)
+model1 <- auto.arima(train_ts, seasonal = TRUE)
+summary(model1)
+print(model1)
+acf(resid(model1))
 
-mod1 <- auto.arima(train$Sales, seasonal = TRUE)
-summary(m1)
-print(m1)
+model2 <- arima(train_ts, c(2, 1, 1), list(order = c(2, 1, 1)))
+summary(model2)
+print(model2)
+acf(resid(model2))
 
-acf(resid(m1))
-
-pr <- predict(mod1, n.ahead = h)
+pr <- predict(model1, n.ahead = h)
 yp <- pr$pred
 str(yp)
 
-plot(yp)
-plot(y, type = "o", pch = 18, cex = 0.5)
+plot(test_ts, type = "o", pch = 18)
 grid()
-lines(yp, col = "blue", type = "o", pch = 20, cex = 0.5)
+lines(yp, col = "#ff0000", type = "o", pch = 18)
 
-ep <- y[(TT+1):(TT+h)] - yp
-plot(ep, type="o", pch=18, ylim=range(ep,0))
-abline(h = 0, col = 6)
+ep <- test_ts - yp
+plot(ep, type = "o", pch = 18, ylim = range(ep, 0))
+abline(h = 0, col = "#00FF00")
 
-qnorm(1 - 0.1 / 2) #вероятность левого хвоста
-L <- pr$pred - pr$se * qnorm(1 - 0.1 / 2)
-U <- pr$pred + pr$se * qnorm(1 - 0.1 / 2)
+bottom_boundary <- pr$pred - pr$se * qnorm(1 - 0.1 / 2)
+top_boundary <- pr$pred + pr$se * qnorm(1 - 0.1 / 2)
 
-str(L)
-plot(y, type = "o", pch = 18, cex = 1, xlim = c(160, TT + h))
+str(bottom_boundary)
+str(top_boundary)
+str(yp)
+full_ts <- ts(data= df$dairy, start = c(1990, 1), frequency = 12)
+plot(full_ts, type = "o", pch = 18, xlim = c(2005, 2010))
 grid()
-lines(yp, col = "blue", type = "o", pch = 20, cex = 1, lty = 2)
-lines(L, col = "red", lty = 3, lwd = 2)
-lines(U, col = "green", lty = 3, lwd = 2)
-
+lines(yp, col = "blue", type = "o", pch = 18, lty = 2)
+lines(bottom_boundary, col = "#FF0000", lty = 2, lwd = 2)
+lines(top_boundary, col = "#00FF00", lty = 2, lwd = 2)
 
 #-------------------------------------------------
 df <- read.delim("Turkey_XU100.TSV")
 View(df)
 
-r <- diff(log(df$Close))*100
+r <- diff(log(df$Close)) * 100
 plot.ts(r)
 grid()
-abline(h=0, col=4)
+abline(h = 0, col = 4)
 
 acf(r^2)
 acf(abs(r))
@@ -62,8 +66,8 @@ for (t in 2:TT){
 }
 vol.rm <- sqrt(s2)
 
-plot.ts(vol.rm, ylim=range(vol.rm,0))
-abline(h=0, col=6, lwd=2)
+plot.ts(vol.rm, ylim = range(vol.rm, 0))
+abline(h=0, col = 6, lwd = 2)
 
 plot.ts(r)
 lines(vol.rm, col="blue", lwd=2)
