@@ -51,7 +51,7 @@ plot.ts(y)
 acf(y, 20)
 lines(phi^(1:20), col = 2)
 
-df <- read.csv("data.txt", sep = ';')
+df <- read.csv("data.txt")
 df <- data.frame(date = df$X.DATE., x = df$X.VOL.)
 names(df) <- c("date", "x")
 df$date <- as.Date(df$date)
